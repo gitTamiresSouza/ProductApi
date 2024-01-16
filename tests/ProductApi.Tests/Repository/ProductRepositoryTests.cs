@@ -77,10 +77,11 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task UpdateAsync_ExistingProduct_ReturnsTrue()
         {
-            await _context.Products.AddAsync(new ProductEntity { Id = 3, Name = "teste 1", Price = 2, Stock = 2 });
+            var product = new ProductEntity { Id = 3, Name = "teste 1", Price = 2, Stock = 2 };
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
-            var result = await _repository.UpdateAsync(firstProduct);
+            var result = await _repository.UpdateAsync(product);
 
             Assert.True(result);
         }
