@@ -52,7 +52,7 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task AddAsync_NewProduct_ReturnsTrue()
         {
-            ProductEntity expectedProductEntity = new ProductEntity { Id = 3, Name = "teste 1", Price = 2, Stock = 2 };
+            ProductEntity expectedProductEntity = new ProductEntity { Id = 2, Name = "teste 1", Price = 2, Stock = 2 };
 
             var result = await _repository.AddAsync(expectedProductEntity);
 
@@ -77,6 +77,9 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task UpdateAsync_ExistingProduct_ReturnsTrue()
         {
+            await _context.Products.AddAsync(new ProductEntity { Id = 3, Name = "teste 1", Price = 2, Stock = 2 });
+            await _context.SaveChangesAsync();
+
             var result = await _repository.UpdateAsync(firstProduct);
 
             Assert.True(result);
@@ -95,7 +98,10 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task DeleteAsync_ExistingProduct_ReturnsTrue()
         {
-            var result = await _repository.DeleteAsync(firstProduct.Id);
+            await _context.Products.AddAsync(new ProductEntity { Id = 4, Name = "teste 1", Price = 2, Stock = 2 });
+            await _context.SaveChangesAsync();
+
+            var result = await _repository.DeleteAsync(4);
 
             Assert.True(result);
         }
