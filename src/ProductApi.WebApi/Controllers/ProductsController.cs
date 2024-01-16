@@ -27,6 +27,8 @@ namespace ProductApi.WebApi.Controllers
         /// Todos campos do json são opcionais. Ex: {"order": "name", "ascending":false} ou {"id": 1} ou  {"name": "notebook"}<br /></param>
         /// <returns></returns>
         [HttpGet()]
+        [ProducesResponseType(typeof(List<ProductDTO>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> Get(string? filter)
         {
             var products = await _productService.ListAsync(string.IsNullOrEmpty(filter) ? null : JsonConvert.DeserializeObject<Filter>(filter));
@@ -35,7 +37,14 @@ namespace ProductApi.WebApi.Controllers
             return Ok(products);
         }
 
+        /// <summary>
+        /// Adiciona um novo produto
+        /// </summary>
+        /// <param name="ProductDto"></param>
+        /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(typeof(string), 409)]
         public async Task<IActionResult> Post([FromBody] ProductDTO ProductDto)
         {
             if (ProductDto == null)
@@ -47,8 +56,15 @@ namespace ProductApi.WebApi.Controllers
             return new CreatedAtRouteResult("GetProduct", new { id = ProductDto.Id });
         }
 
+        /// <summary>
+        /// Atualiza um produto existente
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="ProductDto"></param>
+        /// <returns></returns>
         [HttpPut]
-
+        [ProducesResponseType(typeof(ProductDTO), 200)]
+        [ProducesResponseType(typeof(string), 404)]
         public async Task<IActionResult> Put(int id, [FromBody] ProductDTO ProductDto)
         {
             if (ProductDto == null)
@@ -60,11 +76,17 @@ namespace ProductApi.WebApi.Controllers
             var result = await _productService.UpdateAsync(ProductDto);
             if (!result)
                 return new NotFoundObjectResult("Product not found");
-            return Ok(ProductDto);
+            return new OkObjectResult(ProductDto);
         }
 
-
+        /// <summary>
+        /// Delete um produto
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(string),404)]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _productService.DeleteAsync(id);
