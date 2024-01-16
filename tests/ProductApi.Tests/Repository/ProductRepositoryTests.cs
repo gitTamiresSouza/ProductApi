@@ -1,10 +1,10 @@
 ﻿using ProductApi.Infrastructure.Data;
 using ProductApi.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ProductApi.Core.Entities;
+using ProductApi.Domain.Entities;
 using Xunit;
 using Moq;
-using ProductApi.Core.Common;
+using ProductApi.Domain.Common;
 
 namespace ProductApi.Tests.Repository
 {
@@ -12,7 +12,7 @@ namespace ProductApi.Tests.Repository
     {
         private readonly AppDbContext _context;
         private readonly ProductRepository _repository;
-        ProductEntity expectedProductEntity = new ProductEntity { Id = 1, Name = "teste1", Price = 2, Stock = 2 };
+        
         public ProductRepositoryTests()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -26,23 +26,25 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task ListAsync_ReturnsAllProducts_WithoutFilter()
         {
+            ProductEntity expectedProductEntity = new ProductEntity { Id = 1, Name = "teste 1", Price = 2, Stock = 2 };
             await _context.Products.AddRangeAsync(new List<ProductEntity> { expectedProductEntity });
             await _context.SaveChangesAsync();
 
             var result = await _repository.ListAsync(null);
 
-            Assert.Equal(new List<ProductEntity> { expectedProductEntity }, result);
+            Assert.Equivalent(new List<ProductEntity> { expectedProductEntity }, result);
         }
 
         [Fact]
         public async Task ListAsync_ReturnsAllProducts_WithFilter()
         {
+            ProductEntity expectedProductEntity = new ProductEntity { Id = 2, Name = "teste 1", Price = 2, Stock = 2 };
             await _context.Products.AddRangeAsync(new List<ProductEntity> { expectedProductEntity });
             await _context.SaveChangesAsync();
 
             var result = await _repository.ListAsync(It.IsAny<Filter>());
 
-            Assert.Equal(new List<ProductEntity> { expectedProductEntity }, result);
+            Assert.Equivalent(new List<ProductEntity> { expectedProductEntity }, result);
         }
     }
 }

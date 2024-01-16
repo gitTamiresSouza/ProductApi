@@ -2,7 +2,7 @@
 using Moq;
 using ProductApi.Application.DTOs;
 using ProductApi.Application.Services.Interfaces;
-using ProductApi.Core.Common;
+using ProductApi.Domain.Common;
 using ProductApi.WebApi.Controllers;
 using Xunit;
 

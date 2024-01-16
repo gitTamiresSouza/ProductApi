@@ -2,9 +2,9 @@
 using Moq;
 using ProductApi.Application.DTOs;
 using ProductApi.Application.Services;
-using ProductApi.Core.Common;
-using ProductApi.Core.Entities;
-using ProductApi.Core.Interfaces;
+using ProductApi.Domain.Common;
+using ProductApi.Domain.Entities;
+using ProductApi.Domain.Interfaces;
 using Xunit;
 
 namespace ProductApi.Tests.Services
