@@ -1,5 +1,6 @@
 ProductApi
 
+Dependência - .NET SDK 8 - https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 Execução do código -> No prompt de comando dentra da pasta do projeto ProductApi.WebApi execute "dotnet run"
 
 ProductApi.Domain -> Inclui entidades e objetos de valores. Interage com a aplicação de infraestrutra através de abstrações e dependencias(interfaces e contratos)
