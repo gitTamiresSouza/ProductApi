@@ -12,7 +12,6 @@ namespace ProductApi.Tests.Repository
     {
         private readonly AppDbContext _context;
         private readonly ProductRepository _repository;
-        ProductEntity firstProduct = new ProductEntity { Id = 1, Name = "teste 1", Price = 2, Stock = 2 };
         public ProductRepositoryTests()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -26,33 +25,43 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task ListAsync_ReturnsAllProducts_WithoutFilter()
         {
-            await _context.Products.AddRangeAsync(new List<ProductEntity> { firstProduct });
+            var product = new ProductEntity
+            {
+                Id = 1,
+                Name = "teste 1",
+                Price = 2,
+                Stock = 2
+            };
+            await _context.Products.AddRangeAsync(new List<ProductEntity> { product });
             await _context.SaveChangesAsync();
 
             var result = await _repository.ListAsync(null);
 
-            Assert.Equivalent(new List<ProductEntity> { firstProduct }, result);
+            Assert.Equivalent(new List<ProductEntity> { product }, result);
         }
 
         [Fact]
         public async Task ListAsync_ReturnsAllProducts_WithFilter()
         {
-            var productExists = await _context.Products.FirstOrDefaultAsync(x => x.Id == 1);
-            if (productExists == null)
+            var product = new ProductEntity
             {
-                await _context.Products.AddAsync(firstProduct);
-                await _context.SaveChangesAsync();
-            }
+                Id = 2,
+                Name = "teste 1",
+                Price = 2,
+                Stock = 2
+            };
+            await _context.Products.AddRangeAsync(new List<ProductEntity> { product });
+            await _context.SaveChangesAsync();
 
             var result = await _repository.ListAsync(It.IsAny<Filter>());
 
-            Assert.Equivalent(new List<ProductEntity> { firstProduct }, result);
+            Assert.Equivalent(new List<ProductEntity> { product }, result);
         }
 
         [Fact]
         public async Task AddAsync_NewProduct_ReturnsTrue()
         {
-            ProductEntity expectedProductEntity = new ProductEntity { Id = 2, Name = "teste 1", Price = 2, Stock = 2 };
+            ProductEntity expectedProductEntity = new ProductEntity { Id = 3, Name = "teste 1", Price = 2, Stock = 2 };
 
             var result = await _repository.AddAsync(expectedProductEntity);
 
@@ -62,14 +71,17 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task AddAsync_ExistingProduct_ReturnsFalse()
         {
-            var productExists = await _context.Products.FirstOrDefaultAsync(x => x.Id == 1);
-            if (productExists == null)
+            var product = new ProductEntity
             {
-                await _context.Products.AddAsync(firstProduct);
-                await _context.SaveChangesAsync();
-            }
+                Id = 4,
+                Name = "teste 1",
+                Price = 2,
+                Stock = 2
+            };
+            await _context.Products.AddRangeAsync(new List<ProductEntity> { product });
+            await _context.SaveChangesAsync();
             
-            var result = await _repository.AddAsync(firstProduct);
+            var result = await _repository.AddAsync(product);
 
             Assert.False(result);
         }
@@ -77,7 +89,7 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task UpdateAsync_ExistingProduct_ReturnsTrue()
         {
-            var product = new ProductEntity { Id = 3, Name = "teste 1", Price = 2, Stock = 2 };
+            var product = new ProductEntity { Id = 5, Name = "teste 1", Price = 2, Stock = 2 };
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
@@ -89,7 +101,7 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task UpdateAsync_ProductNotFound_ReturnsFalse()
         {
-            ProductEntity expectedProductEntity = new ProductEntity { Id = 5, Name = "teste 1", Price = 2, Stock = 2 };
+            ProductEntity expectedProductEntity = new ProductEntity { Id = 6, Name = "teste 1", Price = 2, Stock = 2 };
 
             var result = await _repository.UpdateAsync(expectedProductEntity);
 
@@ -99,10 +111,10 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task DeleteAsync_ExistingProduct_ReturnsTrue()
         {
-            await _context.Products.AddAsync(new ProductEntity { Id = 4, Name = "teste 1", Price = 2, Stock = 2 });
+            await _context.Products.AddAsync(new ProductEntity { Id = 6, Name = "teste 1", Price = 2, Stock = 2 });
             await _context.SaveChangesAsync();
 
-            var result = await _repository.DeleteAsync(4);
+            var result = await _repository.DeleteAsync(6);
 
             Assert.True(result);
         }
@@ -110,7 +122,7 @@ namespace ProductApi.Tests.Repository
         [Fact]
         public async Task DeleteAsync_ProductNotFound_ReturnsFalse()
         {
-            var result = await _repository.DeleteAsync(5);
+            var result = await _repository.DeleteAsync(7);
 
             Assert.False(result);
         }
